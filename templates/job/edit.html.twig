@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier fonction{% endblock %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+    <div class='crud-container'>
+        <h2>Modifier Job :</h2>
+        {{ include('job/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+        <a href="{{ path('edit_param') }}"><button class='btn mt-3'>Retour</button></a>
+        {{ include('job/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

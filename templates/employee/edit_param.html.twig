@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres{% endblock %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+
+    <div class="container row box">
+        <div class="col-4">
+            <div class='row param-title'>
+                <h2 id="job-title">Fonction</h2>
+                <button class="btn ml-4" data-toggle="modal" data-target="#exampleModal">Créer nouveau</button>
+            </div>
+
+            <div id="job-table">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for job in jobs %}
+                        <tr>
+                            <td>{{ job.label }}</td>
+                            <td>
+                                <a href="{{ path('job_edit', {'id': job.id}) }}"><button class="btn">Modifier</button></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Aucune donnée</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class='row param-title'>
+                <h2 id="service-title">Service</h2>
+                <button class="btn ml-4" data-toggle="modal" data-target="#exampleModal2">Créer nouveau</button>
+            </div>
+            <div id="service-table">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for service in services %}
+                        <tr>
+                            <td>{{ service.label }}</td>
+                            <td>
+                                <a href="{{ path('status_edit', {'id': service.id}) }}"><button class="btn">Modifier</button></a>
+
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Aucune donnée</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class='row param-title'>
+                <h2 id="absence-title">Absence</h2>
+                <button class="btn ml-4" data-toggle="modal" data-target="#exampleModal3">Créer nouveau</button>
+            </div>
+            <div id="absence-table">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for absence in absences %}
+                        <tr>
+                            <td>{{ absence.label }}</td>
+                            <td>
+                                <a href="{{ path('absence_edit', {'id': absence.id}) }}"><button class="btn">Modifier</button></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Aucune donnée</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Service -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Enregistrer un nouveau statut</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('employee/newStatus.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                    <!-- fermeture div row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Absence -->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel3">Enregistrer une nouvelle absence</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ml-2">
+                    {{ include('absence/new.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                    <!-- fermeture div row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Fonction -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer une nouvelle fonction</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('employee/newJob.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                    <!-- fermeture div row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+
+{% endblock %}

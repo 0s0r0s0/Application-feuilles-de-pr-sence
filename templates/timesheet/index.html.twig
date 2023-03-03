@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Timesheet index{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Timesheet index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Year</th>
+                <th>Datas</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for timesheet in timesheets %}
+            <tr>
+                <td>{{ timesheet.id }}</td>
+                <td>{{ timesheet.year }}</td>
+                <td>{{ timesheet.datas }}</td>
+                <td>
+                    <a href="{{ path('timesheet_show', {'id': timesheet.id}) }}">show</a>
+                    <a href="{{ path('timesheet_edit', {'id': timesheet.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('timesheet_new') }}">Create new</a>
+{% endblock %}

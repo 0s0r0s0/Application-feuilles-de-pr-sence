@@ -1,0 +1,5 @@
+<form method="post" action="{{ path('employee_delete', {'id': employee.id}) }}" onsubmit="return confirm('Etes-vous sûr(e) de vouloir supprimer ce salarié? Cette action est irréversible!');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employee.id) }}">
+    <button class="btn ml-3">Supprimer</button>
+</form>

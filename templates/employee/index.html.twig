@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des salariés{% endblock %}
+
+{% block body %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+
+    {#{% include '_menu.html.twig' %}#}
+
+    <!-- BANNIERE -->
+    <header>
+        <div class="row banniere">
+
+            <!-- ICONS redimensionnés -->
+            <div class='icons-bar col-1'>
+                <a href="{{ path('home') }}">
+                    <div class="icon-home">
+                        <img class="icons" src="{{ asset('img/home.png') }}" alt="icon maison">
+                    </div>
+                </a>
+                <a href="{{ path('calendar') }}">
+                    <div class="icon-calendar">
+                        <img class="icons" src="{{ asset('img/calendar.png') }}" alt="icon calendrier">
+                    </div>
+                </a>
+                <a href="{{ path('edit_param') }}">
+                    <div class="icon-settings">
+                        <img class="icons" src="{{ asset('img/settings.png') }}" alt="icon réglage">
+                    </div>
+                </a>
+            </div>
+
+            <!-- BOUTONS principaux -->
+            <div class="btn-p col-2 offset-1" id='btn-p'>
+                <button type="button" class="btn btn-principal"><a href="{{ path('employee_new') }}">Nouveau salarié</a></button>
+            </div>
+
+            <!-- Button trigger modal -->
+            <div class="btn-p col-2">
+                <button type="button" class="btn btn-principal" data-toggle="modal" data-target="#exampleModal">Feuille de présence</button>
+            </div>
+
+            <!--TITRE DE LA PAGE -->
+            <h1 id="accueil" class="col-3 offset-3">Accueil</h1>
+        </div>
+
+    </header>
+
+    <!-- TABLE BODY -->
+    <table class="table text-center table-striped">
+        <thead class="titres">
+        <tr>
+            <th>Nom :</th>
+            <th>Prénom :</th>
+            <th>Service :</th>
+            <th>Horaires :</th>
+            <th>PDF :</th>
+            <th>Fiches salariés :</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!--Pour chaque salarié : -->
+        {% for employee in employees %}
+            <tr {% if employee.isActive == 0 %} class="unactivated" {% endif %}>
+                <td>{{ employee.lastName }}</td>
+                <td>{{ employee.firstName }}</td>
+                <td>{{ employee.status.label }}</td>
+                <td>
+                    {% set foo = 0 %}
+                    {% for timetable in timetables  %}
+                        {% if timetable.employee.id == employee.id %}
+                            {% set foo = 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if foo == 1 %}
+                        <!-- ICON checked quand l'emploi du temps est déjà créé -->
+                        <img id="checked" class="icons" src="{{ asset('img/checked.png') }}" alt="icon valider">
+                        <a href="{{ path('time_table_delete', {'id': employee.id}) }}"><button class="btn btn-sm">Modifier</button></a>
+                    {% else %}
+                        <!-- Bouton AJOUT d'un emploi du temps / horaires du salarié -->
+                        <a class="lien-ajouter" href="{{ path('time_table_new', {'id': employee.id}) }}"><button type="button" class="btn-ajouter btn btn-sm ml-2">Ajouter</button></a>
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Lien PDF -->
+                    {% for sheet in sheets  %}
+                        {% if sheet.employee.id == employee.id %}
+                            <option value="sheet.month.label"><a class="pdf" href="{{ path('pdf', {'id': sheet.id}) }}">{{ sheet.month.label }} {{ sheet.year }}</a></option>
+                        {% endif %}
+
+                    {% endfor %}
+                </td>
+                <td>
+                    <!-- Fiches salariés -->
+                    <button class="btn btn-sm"><a href="{{ path('employee_show', {'id': employee.id}) }}">Voir</a></button>
+                    <button class="btn btn-sm"><a href="{{ path('employee_edit', {'id': employee.id}) }}">Modifier</a></button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <!-- PAGINATION -->
+
+    <div class="row justify-content-md-center mt-5">
+        <div class="navigation">
+            {{ knp_pagination_render(employees) }}
+        </div>
+    </div>
+
+    <!-- Modal emploi du temps-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Créer le modèle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('timesheet/_form.html.twig') }}
+                    <button type="button" class="btn ml-2 mt-3" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

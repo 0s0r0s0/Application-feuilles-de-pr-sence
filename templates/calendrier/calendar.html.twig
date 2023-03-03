@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Salariés
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                        <a class="link-employee dropdown-item" href="{{ path('home') }}">Gérer les salariés</a>
+                        <a class="link-employee dropdown-item" href="{{ path('employee_new') }}">Ajouter un salarié</a>
+
+                        <div class="dropdown-divider"></div>
+
+                        {% for employee in employees %}
+                            <a class="link-employee dropdown-item" href="{{ path('employee_show', {'id': employee.id}) }}">{{ employee.firstName }} {{ employee.lastName }}</a>
+
+                        {% endfor %}
+
+                    </div>
+                </li>
+
+            </ul>
+            <ul class='navbar-nav ml-5'><a href="{{ path('calendrier_new') }}">Ajouter un événement</a><ul>
+        </div>
+
+    </nav>
+
+    <div id="calendar-holder"></div>
+
+
+    <form id="filter">
+
+        <table class="table table-striped">
+
+            {% for statu in status  %}
+                <tr>
+                    <th class='text-center pt-3 pb-0'><label for="{{ statu.label }}">{{ statu.label|upper }} :</label></th>
+
+                    {% for employee in employees %}
+
+                        {% if employee.status.id == statu.id %}
+
+                            <td>
+                                <input type="checkbox" id="{{ employee.lastName }}" class="{{ statu.label}} filter" name="{{ statu.label }}" value="{{ statu.label }}" checked="checked" onclick="filterEvent()">
+                                <label for="{{ employee.lastName }}" class="employee">{{ employee.lastName }}</label>
+                            </td>
+
+                        {% endif %}
+
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+        </table>
+    </form>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.1.0/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.1.0/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.1.0/main.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.1.0/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.1.0/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.1.0/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.1.0/main.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            const calendarEl = document.getElementById('calendar-holder');
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                defaultView: 'dayGridMonth',
+                editable: true,
+                height: 600,
+                eventSources: [
+                    {
+                        url: "{{ path('fc_load_events') }}",
+                        method: "POST",
+                        extraParams: {
+                            filters: JSON.stringify({user_name: 5})
+                        },
+                        failure: () => {
+                            alert("Une erreur est survenue lors du chargement du calendrier!");
+                        },
+                    },
+                ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                },
+                plugins: [ 'interaction', 'dayGrid', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
+                locale: 'fr',
+                timeZone: 'UTC',
+                buttonText: {
+                    today: 'Aujourd\'hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    list: 'Liste'
+                },
+                nowIndicator: true,
+            });
+
+            calendar.render();
+        });
+
+        // ** Permet de changer la couleur des events si ce sont des jours fériés **
+
+        function setFerieClass() {
+            const eventTitles = document.getElementsByClassName('fc-title')
+            console.log(eventTitles);
+            for (const eventTitle of eventTitles) {
+                if(eventTitle.innerHTML.includes('Férié')){
+                    eventTitle.parentNode.parentNode.classList.add('ferie');
+                }
+            }}
+        setTimeout("setFerieClass()",360);
+
+
+
+        // ** Récupère l'Id de l'input sélectionné **
+        let getInputId;
+
+        $(".filter").hover(function () {
+            currentId = $(this).attr('id')
+            getInputId = currentId;
+        });
+
+        // ** Permet le tri par services **
+        function filterService(service) {
+
+            //     let filter = service.value;
+            //     const employees = document.getElementsByClassName('employee');
+            //     for (const employee of employees){
+            //             console.log(employee.name);
+            //     }
+
+        }
+
+        // ** Filtre les events par salariés **
+        function filterEvent() {
+            const eventTitles = document.getElementsByClassName('fc-title')
+            for (const eventTitle of eventTitles) {
+                if(eventTitle.innerHTML.includes(getInputId)){
+                    eventTitle.parentNode.parentNode.classList.toggle('filtered');
+                }
+            }}
+
+
+    </script>
+{% endblock %}

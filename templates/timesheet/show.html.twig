@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Timesheet{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-left ml-4 mb-2">
+        <div class="col-2">Nom  : {{ timesheet.employee.firstName }}</div>
+        <div class="col-2">Prénom : {{ timesheet.employee.lastName }}</div>
+    </div>
+    <div class="row justify-content-left ml-4 mb-2">
+        <div class="col-2">Mois : {{ timesheet.month.label }}</div>
+        <div class="col-2">Année : {{ timesheet.year }}</div>
+    </div>
+
+    <table class="table sheet-print table-bordered text-center ml-4">
+        <thead class="text-uppercase">
+            <th scope="col" style="border: none"></th>
+            <th scope="col" style="border: none"></th>
+            <th scope="col">Début</th>
+            <th scope="col">Fin</th>
+            <th scope="col">Début</th>
+            <th scope="col">Fin</th>
+            <th scope="col">Total</th>
+            <th scope="col">H sup</th>
+            <th scope="col">ObservationS</th>
+        </thead>
+        {% set hSup = 0 %}
+        {% for data in datas %}
+            {% if (data['1'] == 'SAMEDI') or (data['1'] == 'DIMANCHE') %}
+                <tr class="bg-info" >
+            {% else %}
+                <tr>
+            {% endif %}
+                <td class="font-weight-bold">{{ data['0'] }}</td>
+                <td class="text-left">{{ data['1'] }}</td>
+                    {% if data['11'] is defined and data['2'] is empty and data['4'] is empty %}
+                        <td colspan="4" class="font-weight-bold">{{ data['11'] }}</td>
+                    {% endif %}
+                    {% if data['2'] is defined and data['2'] is not empty %}
+                        <td>{{ data['2'] }}</td>
+                    {% elseif data['7'] is defined and data['7'] is not empty and data['4'] is defined and data['4'] is not empty %}
+                        <td class="font-weight-bold" colspan="2">{{ data['7'] }}</td>
+                    {% elseif data['7'] is defined and data['7'] is not empty and (data['4'] is not defined or data['4'] is empty) %}
+                        <td class="font-weight-bold" colspan="4">{{ data['7'] }}</td>
+                    {% endif %}
+                    {% if data['3'] is defined and data['3'] is not empty %}
+                        <td>{{ data['3'] }}</td>
+                    {% endif %}
+
+                    {% if data['4'] is defined and data['4'] is not empty %}
+                        <td>{{ data['4'] }}</td>
+                    {% elseif data['7'] is defined and data['7'] is not empty and (data['4'] is not defined or data['4'] is empty) and data['2'] is defined and data['2'] is not empty%}
+                        <td class="font-weight-bold" colspan="2">{{ data['7'] }}</td>
+                    {% endif %}
+
+                    {% if data['5'] is defined and data['5'] is not empty %}
+                        <td>{{ data['5'] }}</td>
+                    {% endif %}
+
+                    {% if (data['1'] == 'SAMEDI') or (data['1'] == 'DIMANCHE' and data['2'] is empty and data['4'] is empty) %}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    {% endif %}
+                    {% if data['8'] is defined and data['8'] is not empty and data['8'] is not same as ('0h0') %}
+                        <td>{{ data['8'] }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if data['9'] is defined and data['9'] is not empty %}
+                        <td>{{ data['9'] }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if data['6'] is defined and data['6'] is not empty %}
+                        <td class="font-weight-bold">{{ data['6'] }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
+
+            </tr>
+            {% set hSup =  data['10']  %}
+        {% endfor %}
+
+
+    </table>
+    <div class="row">
+        <div class="col-4 ml-2">Heures supplémentaires : {{ hSup }}</div>
+        <div class="col-4 mr-auto">Signature :</div>
+    </div>
+    <a href="{{ path('home') }}"><button class="btn btn-outline-danger btn-sm ml-4">Retour</button></a>
+
+{% endblock %}

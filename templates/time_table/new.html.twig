@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TimeTable{% endblock %}
+
+{% block body %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+    {% include '_menu.html.twig' %}
+    <div class="row mt-3">
+        <div class="ml-4 mb-3">
+            <button type="button" class="btn mt-3 ml-3 mb-3" id="btn-save" onclick="saveTimetable()">Enregistrer</button>
+            <a href="{{ path('home') }}"><button class="btn ml-3">Retour</button></a>
+            <button type="button" class="btn ml-5" data-toggle="modal" data-target="#exampleModal">Nouveau motif d'absence</button>
+        </div>
+    </div>
+
+
+    <h1 class="ml-4">Créer l'emploi du temps type de : {{ employee.firstName }} {{ employee.lastName }} </h1>
+    {% for day in days  %}
+        {% if ( day.id is same as (6)) or ( day.id is same as (7)) %}
+            {#Possibilité d'ajouter des week-ends#}
+            {#                <div class="btn-weekend-horaire ml-4" id="btn-weekend-horaire-{{ day.id }}">#}
+            {#                <button type="button" class="btn-absence btn-outline-info mt-2" id="btn-weekend-horaire-{{ day.id }}" onclick="horaireWeekEnd()">Ajouter un créneau</button>#}
+            {#                </div>#}
+            {#            <div class="input-group ml-4 horaires-weekend" id="horaires-weekend-{{ day.id }}">#}
+            {#                <input class="form-control col-2 ml-4" id="amStart-{{ day.id }}" type="time" value="09:00">#}
+            {#                <input class="form-control col-2 ml-4" id="amEnd-{{ day.id }}" type="time" value="12:00">#}
+            {#                <input class="form-control col-2 ml-4" id="pmStart-{{ day.id }}" type="time" value="14:00">#}
+            {#                <input class="form-control col-2 ml-4" id="pmEnd-{{ day.id }}" type="time" value="18:00">#}
+            {#                <button type="button" class="btn-absence btn-outline-info ml-2" id="btn-absence-{{ day.id }}" onclick="weekendReset()">Annuler Week-end</button>#}
+            {#            </div>#}
+            {#        </div>#}
+        {% else %}
+            <div class="ml-4 mr-3 mb-3 mt-5 daily font-weight-bold" id="{{ day.id }}"><div>{{ day.label }} :</div>
+
+
+                <div class="input-group ml-5 horaires " id="horaires-{{ day.id }}">
+                    <input class="form-control col-2 ml-4" id="amStart-{{ day.id }}" type="time" value="09:00" onchange="checkError()">
+                    <input class="form-control col-2 ml-4" id="amEnd-{{ day.id }}" type="time" value="12:00" onchange="checkError()">
+                    <input class="form-control col-2 ml-4" id="pmStart-{{ day.id }}" type="time" value="14:00" onchange="checkError()">
+                    <input class="form-control col-2 ml-4" id="pmEnd-{{ day.id }}" type="time" value="18:00" onchange="checkError()">
+                    <button type="button" class="btn btn-absence ml-5" id="btn-absence-{{ day.id }}" onclick="adAbsence()">Absence</button>
+                </div>
+                <div class='row ml-5'>
+                    <div class="select-absence ml-3 col-3" id="absence-{{ day.id }}">
+                        <select name="absence" id="absence-select-{{ day.id }}" class="form-control">
+                            {% for abs in absence  %}
+                                <option value="{{ abs.id }}">{{ abs.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="btn-absence-reset ml-4" id="btn-absence-reset-{{ day.id }}">
+                        <button type="button" class="btn btn-absence ml-3" onclick="absenceReset()">Annuler l'absence</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer une nouvelle absence</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('timesheet/newAbsence.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        let arr_timetableS = [];
+
+        let getDayId;
+
+        $(".daily").hover(function () {
+            currentId = $(this).attr('id')
+            getDayId = currentId;
+        });
+
+        $('.btn-weekend-reset').hide();
+        $('.horaires-weekend').hide();
+        $('.select-absence').hide();
+        $('.btn-absence-reset').hide();
+
+        // Initialise l'absence ( cache le bouton absence, fait apparaître les cas d'absence et cache les horaires)
+        function adAbsence() {
+            $('#horaires-' + getDayId).hide();
+            $('#absence-' + getDayId).show();
+            $('#btn-absence-' + getDayId).hide();
+            $('#btn-absence-reset-' + getDayId).show();
+        }
+
+        // Annule l'absence (replace les horaires précèdents et le bouton absence)
+        function absenceReset() {
+            $('#horaires-' + getDayId).show();
+            $('#absence-' + getDayId).hide();
+            $('#btn-absence-' + getDayId).show();
+            $('#btn-absence-reset-' + getDayId).hide();
+        }
+
+        // Horaire Week-end
+        function horaireWeekEnd() {
+            $('#horaires-weekend-' + getDayId).show();
+            $('#btn-weekend-horaire-' + getDayId).hide();
+            $('#btn-weekend-reset-' + getDayId).show();
+            $('#day-horaire-' + getDayId).show();
+
+        }
+
+        // Annule l'horaire du week-end (supprime les horaires et le bouton ajout créneau)
+        function weekendReset() {
+            $('#horaires-weekend-' + getDayId).hide();
+            $('#btn-weekend-horaire-' + getDayId).show();
+            $('#btn-weekend-reset-' + getDayId).hide();
+
+        }
+
+        function checkError() {
+            for (let dayId = 1; dayId <= 5; dayId++){
+                if( parseInt($('#amStart-' + dayId ).val()) > parseInt($('#amEnd-' +  dayId).val())) {
+                    $('#amStart-' + dayId).addClass('error');
+                }else {
+                    $('#amStart-' + dayId).removeClass('error');
+                }
+                if( parseInt($('#amEnd-' + dayId ).val()) > parseInt($('#pmStart-' +  dayId).val())) {
+                    $('#amEnd-' + dayId).addClass('error');
+                }else {
+                    $('#amEnd-' + dayId).removeClass('error');
+                }
+                if( parseInt($('#pmStart-' + dayId ).val()) > parseInt($('#pmEnd-' +  dayId).val())) {
+                    $('#pmStart-' + dayId).addClass('error');
+                }else {
+                    $('#pmStart-' + dayId).removeClass('error');
+                }
+            }
+        }
+
+
+        function saveTimetable() {
+
+            for (let i = 1; i <= 5; i++) {
+
+                let arr_timetable = [];
+
+                if ( $('#amStart-' + i).is(":visible") ){
+                    arr_timetable[1] = document.getElementById('amStart-' + i).value;
+                } else {
+                    arr_timetable[0] = $(":input#absence-select-" + i).val();
+                }
+                if ( $('#amEnd-' + i).is(":visible") ){
+                    arr_timetable[2] = document.getElementById('amEnd-' + i).value;
+                }
+                if ( $('#pmStart-' + i).is(":visible") ){
+                    arr_timetable[3] = document.getElementById('pmStart-' + i).value;
+                }
+                if ( $('#pmEnd-' + i).is(":visible") ){
+                    arr_timetable[4] = document.getElementById('pmEnd-' + i).value;
+                }
+
+                arr_timetableS[i] = arr_timetable;
+
+            }
+            json = JSON.stringify(arr_timetableS);
+
+            let employee = {{ employee.id }};
+            $('#btn-save').hide();
+            $.ajax({
+
+                url: '{{ path('time_table_save') }}',
+                type: 'POST',
+                data:
+                    {
+                        table : arr_timetableS,
+                        employee : employee,
+                    },
+                dataType: 'data',
+                success: alert('La feuille de présence a bien été enregistré !'),
+                error: function() {
+                    console.log('error');
+                }
+            });
+
+        }
+    </script>
+{% endblock %}

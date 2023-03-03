@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vos événements{% endblock %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+    <h1 class="text-center">Liste des événements</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Commence le :</th>
+                <th>Termine le :</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for calendrier in calendriers %}
+            <tr>
+                <td>{{ calendrier.title }}</td>
+                <td>{{ calendrier.beginAt ? calendrier.beginAt|date('d-m-Y H:i:s') : '' }}</td>
+                <td>{{ calendrier.endAt ? calendrier.endAt|date('d-m-Y H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('calendrier_show', {'id': calendrier.id}) }}"><button class="btn btn-success">voir</button></a>
+                    <a href="{{ path('calendrier_edit', {'id': calendrier.id}) }}"><button class="btn btn-success">modifier</button></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="row justify-content-md-center mt-5">
+        <div class="navigation">
+            {{ knp_pagination_render(calendriers) }}
+        </div>
+    </div>
+
+    <a href="{{ path('calendrier_new') }}"><button class="btn btn-outline-primary">Nouvel événement</button></a>
+{% endblock %}

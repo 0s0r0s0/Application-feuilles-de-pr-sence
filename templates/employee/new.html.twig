@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau salarié{% endblock %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+    <div class="ml-5 mb-5 mt-5">
+        <h1>Enregistrer un nouveau salarié</h1>
+    </div>
+    {{ form_start(form)}}
+    <div class='ml-4 mt-3'>
+        <div class='row mt-4 ml-4 mb-4'>
+            <div class="form-group">{{ form_row(form.firstName)}}</div>
+            <div class="form-group">{{ form_row(form.lastName)}}</div>
+        </div>
+        <div class='row'>
+            <div class="form-group col-3 ml-4 mb-4">{{ form_row(form.status)}}</div>
+            <div class="ml-2">Besoin d'un nouveau service ? <button type="button" class="btn ml-4" data-toggle="modal" data-target="#exampleModal">
+                    Ajouter
+                </button></div>
+        </div>
+        <div class='row'>
+            <div class="form-group col-3 ml-4 mb-4">{{ form_row(form.job)}}</div>
+            <div class="ml-2">Besoin d'une nouvelle fonction ? <button type="button" class="btn ml-2" data-toggle="modal" data-target="#exampleModal2">
+                    Ajouter
+                </button></div>
+        </div>
+        <div class="form-group mt-4 mb-4 ml-4">{{ form_row(form.isActive)}}</div>
+    </div>
+    <div class="row ml-4">
+
+        <div>
+            <button class="btn ml-4 mt-4">{{ button_label|default('Enregistrer') }}</button>
+        </div>
+
+        {{ form_end(form)}}
+
+    </div>
+
+    <div class='ml-4'>
+        <a href="{{ path('home') }}"><button class="btn ml-4 mt-4">Retour</button></a>
+    </div>
+
+
+    <!-- Modal Service -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer un nouveau statut</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('employee/newStatus.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Fonction -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer une nouvelle fonction</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('employee/newJob.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

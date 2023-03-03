@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+<div class='row mt-5 ml-5'>
+    <div class="form-group col-3">{{ form_row(form.title) }}</div>
+    <div class='form-group col-9'>{{ form_row(form.employee) }}</div>
+</div>
+
+<div class='row mt-5 ml-5'>
+    <div class="form-group col-3">{{ form_row(form.beginAt) }}</div>
+    <div class="form-group col-9">{{ form_row(form.endAt) }}</div>
+</div>
+
+
+<button class="btn ml-5 mt-3 mb-2 mt-2">{{ button_label|default('Enregistrer') }}</button>
+
+
+
+{{ form_end(form) }}

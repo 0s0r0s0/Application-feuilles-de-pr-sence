@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle fonction{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('style.css')}}">
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(formJob)}}
+    <div class="form-row ml-2">
+        <div class="form-group col-md-8">{{ form_row(formJob.label, {'attr': {'placeholder': 'développeur, comptable etc...'}})}}</div>
+    </div>
+
+    <div class='row btn-modal'>
+    <button class="btn mt-3">{{ button_label|default('Enregistrer') }}</button>
+    {{ form_end(formJob) }}
+{% endblock %}

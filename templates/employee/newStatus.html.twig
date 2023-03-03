@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau service{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css%22%3E
+    <link rel="stylesheet" href="{{ asset('style.css')}}">
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(formStatus)}}
+<div class="form-row ml-2">
+    <div class="form-group col-8">{{ form_row(formStatus.label, {'attr': {'placeholder': 'Technicien, commercial etc...'}})}}</div>
+</div>
+
+<div class='row btn-modal'>
+    <button class="btn mt-3">{{ button_label|default('Enregistrer') }}</button>
+    {{ form_end(formStatus) }}
+    {% endblock %}

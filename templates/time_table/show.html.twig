@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TimeTable{% endblock %}
+
+{% block body %}
+    <h1>TimeTable</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ time_table.id }}</td>
+            </tr>
+            <tr>
+                <th>Am_start_at</th>
+                <td>{{ time_table.amStartAt ? time_table.amStartAt|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Am_end_at</th>
+                <td>{{ time_table.amEndAt ? time_table.amEndAt|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Pm_start_at</th>
+                <td>{{ time_table.pmStartAt ? time_table.pmStartAt|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Pm_end_at</th>
+                <td>{{ time_table.pmEndAt ? time_table.pmEndAt|date('H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('time_table_index') }}">back to list</a>
+
+    <a href="{{ path('time_table_edit', {'id': time_table.id}) }}">edit</a>
+
+    {{ include('time_table/_delete_form.html.twig') }}
+{% endblock %}

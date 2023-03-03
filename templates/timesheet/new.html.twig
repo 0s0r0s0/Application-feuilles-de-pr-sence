@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle feuille{% endblock %}
+
+{% block body %}
+
+{% include '_menu.html.twig' %}
+
+<h1 class="text-center"> Créer le modèle : </h1>
+
+    {{ include('timesheet/_form.html.twig') }}
+
+{% endblock %}
+
+

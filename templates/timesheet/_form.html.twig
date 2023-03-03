@@ -1,0 +1,11 @@
+{{ form_start(form) }}
+<div class="form-row ml-2">
+    <div class="form-group">{{ form_row(form.employee) }}</div>
+
+    <div class="form-group">{{ form_row(form.month,  {value : month }) }}</div>
+
+    <div class="form-group">{{ form_row(form.year, {value : year }) }}</div>
+</div>
+<div class='row btn-modal'>
+    <button class="btn mt-3 ml-5">{{ button_label|default('OK') }}</button>
+{{ form_end(form) }}

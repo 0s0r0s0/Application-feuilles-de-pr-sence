@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Nouvel événement{% endblock %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+    <div class='crud-container'>
+        <h1>Créer un nouvel événement</h1>
+
+        {{ include('calendrier/_form.html.twig') }}
+        <a href="{{ path('calendar') }}"><button class="btn ml-5 mt-2 mb-2">Retour</button></a>
+    </div>
+{% endblock %}

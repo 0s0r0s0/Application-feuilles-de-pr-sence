@@ -1,0 +1,584 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouvelle feuille{% endblock %}
+{% block body %}
+
+    {% include '_menu.html.twig' %}
+    <div class="barre-principale">
+        <div class="d-inline">
+            <h2 id="ts-employee-name" class="d-inline">{{ employee.firstName }} {{ employee.lastName }}</h2>
+            <span id="ts-month" class="jours d-inline ml-5">{{ month.label }}</span> <span id="ts-year" class="jours">{{ year }}</span>
+        </div>
+        <div class="d-inline ml-5 mr-2">
+            <button type="button" class="d-inline btn" id="btn-save" onclick="saveTimesheet()">Sauvegarder</button>
+            <a href="{{ path('home') }}"><button class="d-inline btn ml-4">Retour</button></a>
+        </div>
+
+                <div class='d-inline titre-hsup'>Heures sup :<span id="horaire-sup"></span></div>
+                <div class='d-inline titre-total'>Total :<span id="horaire-mensuel"></span></div>
+
+    </div>
+    {% set size = 0 %}
+    {% for calende in calendrier  %}
+        {% set size = size + 1 %}
+
+    <div class="row day" id="{{ calende.nb }}">
+
+        <div class="date col-2">
+            <div class='row'>
+                <div class="jours ml-3">{{ calende.nb }}</div>
+                <div class="jours jour-nom-{{ calende.nb }} ml-2">{{ calende.day }}</div>
+
+                {# Cherche le jour actuel de la boucle pour afficher les horaires adéquats #}
+                {% set foo = 0 %}
+
+                {% if calende.day == 'LUNDI' %}
+                    {% set foo = 1 %}
+                {% elseif calende.day == 'MARDI' %}
+                    {% set foo = 2 %}
+                {% elseif calende.day =='MERCREDI' %}
+                    {% set foo = 3 %}
+                {% elseif calende.day == 'JEUDI' %}
+                    {% set foo = 4 %}
+                {% elseif calende.day == 'VENDREDI' %}
+                    {% set foo = 5 %}
+                {% elseif calende.day == 'SAMEDI' %}
+                    {% set foo = 6 %}
+                {% else %}
+                    {% set foo = 7 %}
+                {% endif %}
+                {% for ferie in feries %}
+                    {% if (ferie.dateT|date('Y') == year) and (ferie.dateT|date('m') == month.id) and (ferie.dateT|date('d') == calende.nb) %}
+                        <div class="ferie ml-2 font-weight-bold" id="ferie-{{ calende.nb }}">Férié {{ ferie.label }}</div>
+                        {% set foo = 8 %}
+                    {% endif %}
+                {% endfor %}
+                <div>
+                    <img class="icons" id="note" src="{{ asset('img/note.png') }}" alt="note" id="btn-note-{{ calende.nb }}" class="ml-2 btn btn-note modal-trigger" data-toggle="modal" data-target="#exampleModal" onclick="getNoteId()">
+                    <span class="note" id="note-{{ calende.nb }}"></span>
+                </div>
+            </div></div>
+    {% for table in timeTable %}
+        {% if table.day.id == foo %}
+        {% if foo == 8 %}
+        {% else %}
+
+        <div class='heures col-5'>
+        {% if table.absence is not null %}
+        <div class="horaires input-group" id="horaires-{{ calende.nb }}">
+            <div class="absence ml-2" id="absence-select-timetable{{ calende.nb }}" >
+                <select name="absence" id="absence-select-{{ calende.nb }}" class="form-control">
+                    {% for abs in absence  %}
+                        <option value="{{ abs.label }}"{% if table.absence.label is same as (abs.label) %} selected="selected" {% endif %}>{{ abs.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="btn-weekend-horaire-{{ calende.nb }}">
+                <button type="button" id="btn-weekend-horaire-{{ calende.nb }}" class="btn btn-h ml-4" onclick="horaireWeekEnd()">Ajouter un créneau</button>
+            </div>
+            {# input semaine QUAND pas d'horaires enregistrés #}
+
+            <div class="horaires-weekend input-group" id="horaires-weekend-{{ calende.nb }}">
+                    <input class="form-control ml-2" id="amStart-{{ calende.nb }}" type="time" value="10:00"  onchange="horaireMensuelCalculate()">
+                    <input class="form-control ml-2" id="amEnd-{{ calende.nb }}" type="time" value="12:00" onchange="horaireMensuelCalculate()">
+                    <input class="form-control ml-2" id="pmStart-{{ calende.nb }}" type="time" value="14:00" onchange="horaireMensuelCalculate()">
+                    <input class="form-control ml-2" id="pmEnd-{{ calende.nb }}" type="time" value="16:00" onchange="horaireMensuelCalculate()">
+            </div>
+        </div>
+            </div>
+        <div class="col-5 row" id="btn-weekend-horaire-{{ calende.nb }}" >
+            <div id="heure-sup-{{ calende.nb }}" class="heure-sup mr-2">
+                <img class="add-sub" src="{{ asset('img/sub.png') }}" alt="moins" id="add-hour-{{ calende.nb }}" onclick="substract()">
+                <span id="total-hour-{{ calende.nb }}" class="total-hour">0</span>
+                <img class="add-sub" src="{{ asset('img/add.png') }}" alt="plus" id="sub-hour-{{ calende.nb }}" onclick="additionnate()">
+            </div>
+
+            <span class="day-horaire ml-2" id="day-horaire-{{ calende.nb }}"></span>
+
+            <div class='block-btn ml-1'>
+                <div class="btn-weekend-reset ml-2" id="btn-weekend-reset-{{ calende.nb }}">
+                    <button type="button" class="btn btn-h" onclick="weekendReset()">Annuler l'horaire</button>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+            <div class="horaires input-group" id="horaires-{{ calende.nb }}">
+                {# input semaine QUAND les horaires sont déjà enregistrés #}
+                <input class="form-control ml-2" id="amStart-{{ calende.nb }}" type="time" value="{{ table.amStartAt|format_datetime('none', 'short', locale='fr') }}" onchange="horaireMensuelCalculate()">
+                <input class="form-control ml-2" id="amEnd-{{ calende.nb }}" type="time" value="{{ table.amEndAt|format_datetime('none', 'short', locale='fr') }}" onchange="horaireMensuelCalculate()">
+                <input class="form-control ml-2" id="pmStart-{{ calende.nb }}" type="time" value="{{ table.pmStartAt|format_datetime('none', 'short', locale='fr') }}" onchange="horaireMensuelCalculate()">
+                <input class="form-control ml-2" id="pmEnd-{{ calende.nb }}" type="time" value="{{ table.pmEndAt|format_datetime('none', 'short', locale='fr') }}" onchange="horaireMensuelCalculate()">
+                {% endif %}
+                <div class="select-absence col-6" id="absence-{{ calende.nb }}">
+                    <select name="absence" id="absence-select-{{ calende.nb }}" class="form-control abs">
+                        {% for abs in absence  %}
+                            <option value="{{ abs.label }}" >{{ abs.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+
+        </div>
+        <div class='col-5 row'>
+            {% if table.absence is  null %}
+            <div id="heure-sup-{{ calende.nb }}" class="heure-sup mr-2">
+                <img class="add-sub" src="{{ asset('img/sub.png') }}" alt="moins" id="add-hour-{{ calende.nb }}" onclick="substract()">
+                <span id="total-hour-{{ calende.nb }}" class="total-hour">0</span>
+                <img class="add-sub" src="{{ asset('img/add.png') }}" alt="plus" id="sub-hour-{{ calende.nb }}" onclick="additionnate()">
+
+            </div>
+
+            <span class="day-horaire ml-2 mr-3" id="day-horaire-{{ calende.nb }}"></span>
+            {#<input class="ml-2 mb-2" type="checkbox" id="astreinte-{{ calende.nb }}"
+                name="astreinte" value="astreinte-{{ calende.nb }}">
+            <label for="astreinte"></label>#}
+
+            <div class='block-btn'>
+                <div>
+                    <button type="button" class="btn btn-absence btn-h" id="btn-absence-am-{{ calende.nb }}" onclick="absenceAm()">Absent matin</button>
+                    <button type="button" class="btn btn-absence btn-h" id="btn-absence-pm-{{ calende.nb }}" onclick="absencePm()">Absent aprem</button>
+                </div>
+                {% endif %}
+                <div class="btn-absence-reset" id="btn-absence-reset-{{ calende.nb }}">
+                    <button type="button" class="btn btn-h" onclick="absenceReset()">Annuler l'absence</button>
+                    <button type="button" class="btn btn-h" data-toggle="modal" data-target="#exampleModal2">Nouvelle absence</button>
+                </div>
+            </div>
+
+        </div>
+
+        {% endif %}
+        {% endif %}
+
+    {% endfor %}
+
+        {# Adapte l'affichage pour les SAMEDIS et DIMANCHES et férié #}
+        {% if (foo == 6) or (foo == 7) or (foo == 8) %}
+            <div class="btn-weekend-horaire" id="btn-weekend-horaire-{{ calende.nb }}">
+                <button type="button" id="btn-weekend-horaire-{{ calende.nb }}" class="btn btn-h ml-4" onclick="horaireWeekEnd()">Ajouter un créneau</button>
+            </div>
+
+
+            <div class="horaires-weekend col-5 input-group" id="horaires-weekend-{{ calende.nb }}">
+
+                <input class="form-control ml-2" id="amStart-{{ calende.nb }}" type="time" value="10:00"  onchange="horaireMensuelCalculate()">
+                <input class="form-control ml-2" id="amEnd-{{ calende.nb }}" type="time" value="12:00" onchange="horaireMensuelCalculate()">
+                <input class="form-control ml-2" id="pmStart-{{ calende.nb }}" type="time" value="14:00" onchange="horaireMensuelCalculate()">
+                <input class="form-control ml-2" id="pmEnd-{{ calende.nb }}" type="time" value="16:00" onchange="horaireMensuelCalculate()">
+            </div>
+            <div class='col-5 row' id="bloc-h-wk-{{ calende.nb }}">
+                <div id="heure-sup-{{ calende.nb }}" class="heure-sup h-sup-wk mr-2">
+                    <img src="{{ asset('img/sub.png') }}" alt="moins" class="add-sub" id="add-hour-{{ calende.nb }}" onclick="substract()">
+                    <span id="total-hour-{{ calende.nb }}" class="total-hour">0</span>
+                    <img src="{{ asset('img/add.png') }}" alt="plus" class="add-sub" id="sub-hour-{{ calende.nb }}" onclick="additionnate()">
+                </div>
+
+
+                <span class="day-horaire ml-2 mr-3" id="day-horaire-{{ calende.nb }}"></span>
+                {#{% if foo == 6 %}
+                    <input class="ml-2 mb-2" type="checkbox" id="astreinte-{{ calende.nb }}"
+                        name="astreinte" value="astreinte-{{ calende.nb }}">
+                    <label for="astreinte"></label>sub-a
+                {% endif %}#}
+                <div class='block-btn'>
+                    <div class="btn-weekend-reset" id="btn-weekend-reset-{{ calende.nb }}">
+                        <button type="button" class="btn btn-h ml-2" onclick="weekendReset()">Annuler l'horaire</button>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+            </div>
+
+        {% endif %}
+        </div>
+    {% endfor %}
+
+    <!-- Modal Note -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ajouter une note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" >
+                    <input type="text" id="form-title" name="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn" data-dismiss="modal" onclick="addNote()">Enregistrer la note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Absence -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer une nouvelle absence</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('timesheet/newAbsence.html.twig') }}
+                    <button type="button" class="btn ml-2 mt-3" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    </div>
+    <div class="row total-heures">
+        <div class="text-center jours">Heures :
+            <div>
+                <span id="horaire-mensuel"></span>
+            </div>
+        </div>
+        <div class="text-center jours" id='h-sup'>Heures sup :
+            <div>
+                <span id="horaire-sup"></span>
+            </div>
+        </div>
+    </div>
+    <span id="size">{{ size }}</span>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+
+    <script src="{{ asset('Moment/moment.js') }}"></script>
+    <script type="text/javascript">
+        // Variable contenant l'Id du salarié
+        let nom = {{ employee.id }};
+        // Id du mois
+        let month = {{ month.id }};
+        // Id de l'année
+        let year = {{ year }};
+        // Longueur du mois en jour (pour les boucles)
+        let size = parseInt($('#size').text());
+        // Cache le span contenant la longueur du mois
+        $('#size').hide();
+
+        // Ajout d'une class 'week-end' si SAMEDI ou DIMANCHE
+        // Ou d'une class 'ferie' si jour férié pour CSS
+        const dayDivs = document.getElementsByClassName('day')
+
+        for (const dayDiv of dayDivs)
+        {
+            if(dayDiv.innerHTML.includes('SAMEDI') || dayDiv.innerHTML.includes('DIMANCHE'))
+            {
+                dayDiv.classList.add('week-end');
+            }
+
+        }
+
+        //Ajout d'une class quand le jour est pair pour griser la partie (effet table-striped bootstrap)
+
+            for(compteur = 1; compteur <= size; compteur++) {
+                if( compteur < 10 ) {
+                    compteur = '0' + compteur;
+                }
+
+                if((compteur & 1) && !(document.getElementById(compteur).classList.contains('week-end')) ) {
+                    document.getElementById(compteur).classList.add('impair');
+                }
+             }
+
+
+        // Récupère l'id du jour de la div survolée
+        let getDayId;
+
+        $(".day").hover(function () {
+            currentId = $(this).attr('id')
+            getDayId = currentId;
+        });
+
+        // Cache les boutons d'actions alternatifs
+        $('.btn-weekend-reset').hide();
+        $('.horaires-weekend').hide();
+        $('.select-absence').hide();
+        $('.btn-absence-reset').hide();
+        $('.h-sup-wk').hide();
+
+        // Initialise l'absence du matin( cache le bouton absence, fait apparaître les cas d'absence et cache les horaires)
+        function absenceAm() {
+            $('#amStart-' + getDayId).hide();
+            $('#amEnd-' + getDayId).hide();
+            $('#absence-' + getDayId).show();
+            $('#btn-absence-am-' + getDayId).hide();
+            $('#btn-absence-reset-' + getDayId).show();
+            horaireMensuelCalculate();
+        }
+        // Idem pour l'après-midi
+        function absencePm() {
+            $('#pmStart-' + getDayId).hide();
+            $('#pmEnd-' + getDayId).hide();
+            $('#absence-' + getDayId).show();
+            $('#btn-absence-pm-' + getDayId).hide();
+            $('#btn-absence-reset-' + getDayId).show();
+            horaireMensuelCalculate();
+        }
+        // Annule l'absence (replace les horaires précèdents et le bouton absence)
+        function absenceReset() {
+            $('#horaires-' + getDayId).show();
+            $('#absence-' + getDayId).hide();
+            $('#btn-absence-am-' + getDayId).show();
+            $('#btn-absence-pm-' + getDayId).show();
+            $('#btn-absence-reset-' + getDayId).hide();
+            $('#amStart-' + getDayId).show();
+            $('#amEnd-' + getDayId).show();
+            $('#pmStart-' + getDayId).show();
+            $('#pmEnd-' + getDayId).show();
+
+            horaireMensuelCalculate();
+        }
+
+        // Horaire Week-end
+        function horaireWeekEnd() {
+            $('#horaires-weekend-' + getDayId).show();
+            $('#btn-weekend-horaire-' + getDayId).hide();
+            $('#btn-weekend-reset-' + getDayId).show();
+            $('#day-horaire-' + getDayId).show();
+            $('#absence-select-timetable' + getDayId).hide();
+            $('#heure-sup-' + getDayId).show();
+            $('#bloc-h-wk-' + getDayId).show();
+            horaireMensuelCalculate();
+        }
+
+        // Annule l'horaire du week-end (supprime les horaires et le bouton ajout créneau)
+        function weekendReset() {
+            $('#horaires-weekend-' + getDayId).hide();
+            $('#btn-weekend-horaire-' + getDayId).show();
+            $('#btn-weekend-reset-' + getDayId).hide();
+            $('#absence-select-timetable' + getDayId).show();
+            $('#heure-sup-' + getDayId).hide();
+            $('#bloc-h-wk-' + getDayId).hide();
+            $('#day-horaire-' + getDayId).hide();
+            horaireMensuelCalculate();
+        }
+
+        // Additionne et convertit les horaires en format heure + minutes
+        function minutesConvert(start, end) {
+            let MinutsTotal = moment.duration(start).asMinutes() + moment.duration(end).asMinutes();
+
+            let minutes = MinutsTotal % 60;
+            let hours = (MinutsTotal - minutes) / 60;
+            return (hours + ":" + minutes);
+        }
+        // Initialise les horaires du mois à 0 en format heure
+        let monthlyHoraires = '00:00';
+
+        // Calcule les horaires du jour et les affiche
+        function horaireCalculate(dayId) {
+                if( document.getElementById('amStart-' + dayId)) {
+                    let amStart = '00:00';
+                    let amEnd = '00:00';
+                    let pmStart = '00:00';
+                    let pmEnd = '00:00';
+
+                        if($('#amStart-' + dayId).is(":visible")){
+                           amStart = document.getElementById('amStart-' + dayId).value;
+                        }
+                        if($('#amEnd-' + dayId).is(":visible")){
+                            amEnd = document.getElementById('amEnd-' + dayId).value;
+                        }
+                        if($('#pmStart-' + dayId).is(":visible")){
+                            pmStart = document.getElementById('pmStart-' + dayId).value;
+                        }
+                        if($('#pmEnd-' + dayId).is(":visible")){
+                            pmEnd = document.getElementById('pmEnd-' + dayId).value;
+                        }
+                        // Crée une erreur si les dates se chevauchent
+                        if( parseInt($('#amStart-' + dayId ).val()) > parseInt($('#amEnd-' +  dayId).val())) {
+                            $('#amStart-' + dayId).addClass('error');
+                        }else {
+                            $('#amStart-' + dayId).removeClass('error');
+                        }
+                        if( parseInt($('#amEnd-' + dayId ).val()) > parseInt($('#pmStart-' +  dayId).val())) {
+                            $('#amEnd-' + dayId).addClass('error');
+                        }else {
+                            $('#amEnd-' + dayId).removeClass('error');
+                        }
+                        if( parseInt($('#pmStart-' + dayId ).val()) > parseInt($('#pmEnd-' +  dayId).val())) {
+                            $('#pmStart-' + dayId).addClass('error');
+                        }else {
+                            $('#pmStart-' + dayId).removeClass('error');
+                        }
+
+                    // Calcule les horaires du matin (puis aprèm) en utilisant la bibliothèque Moment JS
+                    let matin = moment.utc(moment(amEnd, "HH:mm").diff(moment(amStart, "HH:mm"))).format("HH:mm");
+                    let aprem = moment.utc(moment(pmEnd, "HH:mm").diff(moment(pmStart, "HH:mm"))).format("HH:mm");
+
+                    if ( document.getElementById('pmStart-' + dayId)) {
+                        dayTotal = minutesConvert(matin, aprem);
+                    }
+                    else {
+                        dayTotal = minutesConvert(matin, "00:00");
+                    }
+                    // Ajout de 0 pour l'affichage des formats d'heures
+                    dayTotal = '0' + dayTotal + '0';
+                    monthlyHoraires = minutesConvert(monthlyHoraires, dayTotal);
+
+                    // Remplace le : du format heure en h pour affichage
+                    $('#horaire-mensuel').text(monthlyHoraires.replace(':', 'h'));
+                    let horaire = $('#day-horaire-' + dayId);
+
+                    // Si l'horaire est nul, ne l'affiche pas
+                        if (!(dayTotal === '00:00')) {
+
+                        horaire.text(dayTotal.replace(':', 'h'));}
+                }
+        }
+
+        // Calcule les horaires mensuels
+        function horaireMensuelCalculate() {
+            monthlyHoraires = '00:00';
+
+            for (let i = 1; i <= size; i++) {
+                if (i < 10) {
+                    i = '0' + i;
+                }
+                horaireCalculate(i);
+            }
+        }
+
+        // Fonction ** facultative ** si souhait d'enregistrer les notes en BDD
+        let noteId ;
+
+        function getNoteId() {
+            noteId = getDayId;
+        }
+        // Relance le calcul des horaires pour mise à jour
+        horaireMensuelCalculate();
+
+        // Ajoute une note
+        function addNote() {
+            let note = $('#form-title').val();
+
+            $('#note-' + noteId).html(note);
+        }
+
+        // Enregistre la feuille de présence sous JSON
+        function saveTimesheet() {
+
+            let arr_monthlySheet = [];
+
+            for (let i = 1; i <= size; i ++) {
+
+                let arr_timesheet = [];
+                // Ajoute un zéro devant si chiffre de 0 à 9
+                if (i < 10) {
+                    i = '0' + i;
+                }
+                // A chaque fois qu\'une div de jour existe...
+                if ($('#' + i)) {
+
+                    arr_timesheet[1] = $('.jour-nom-' + i).text();
+                    if ( $('#amStart-' + i).is(":visible") ) {
+                        arr_timesheet[2] = document.getElementById('amStart-' + i).value;
+                    }
+                    if ( $('#amEnd-' + i).is(":visible") ){
+                        arr_timesheet[3] = document.getElementById('amEnd-' + i).value;
+                    }
+                    if ( $('#pmStart-' + i).is(":visible") ){
+                        arr_timesheet[4] = document.getElementById('pmStart-' + i).value;
+                    }
+                    if ( $('#pmEnd-' + i).is(":visible") ){
+                        arr_timesheet[5] = document.getElementById('pmEnd-' + i).value;
+                    }
+                    if ($('#note-' + i).length > 0) {
+                        arr_timesheet[6] = document.getElementById('note-' + i).textContent;
+                    }
+                    if ($(":input#absence-select-" + i).is(":visible")){
+                        arr_timesheet[7] = $(":input#absence-select-" + i).val();
+                    }
+                    if ($("#day-horaire-" + i).text()){
+                        arr_timesheet[8] = $("#day-horaire-" + i).text();
+                    }
+                    if (document.getElementById('total-hour-' + i) !== null  && document.getElementById('total-hour-' + i).innerHTML !== "0")
+                    {
+                        arr_timesheet[9] = document.getElementById('total-hour-' + i).innerHTML.replace(".5", "h30");
+                    }
+                    arr_timesheet[10] = document.getElementById('horaire-sup').innerHTML.replace(".5", "h30");
+                    if (document.getElementById('ferie-' + i)) {
+                        arr_timesheet[11] = document.getElementById('ferie-' + i).textContent;
+                    }
+
+                }
+                // Force la conversion en INT pour supprimer le 0 (ex: (01 *= 1) = 1)
+                i *= 1;
+                arr_timesheet[0] = i;
+                arr_monthlySheet[i - 1] = arr_timesheet;
+
+            }
+            // Fonction AJAX de sauvegarde
+            $.ajax({
+
+                url: '{{ path('save_timesheet')}}',
+                type: 'POST',
+                data:
+                    {
+                        sheet : arr_monthlySheet,
+                        employee : nom,
+                        month: month,
+                        year: year,
+                    },
+                dataType: 'data',
+                success: alert('La feuille de présence a bien été enregistré !'),
+                error: function() {
+                    console.log('Wrong way');
+                }
+            });
+            $('#btn-save').hide();
+        }
+
+        let h = 0;
+
+// Heures supplémentaires:
+        // Soustraction
+        function substract() {
+            h = parseFloat($("#total-hour-" + getDayId).html());
+            if (h >= 0.5) {
+                h = h - 0.5;
+            }
+            $('#total-hour-' + getDayId).text(h);
+            calculateHSup();
+        }
+        // Addition
+        function additionnate() {
+            h = parseFloat($("#total-hour-" + getDayId).html());
+            h = h + 0.5;
+            $('#total-hour-' + getDayId).text(h);
+            calculateHSup();
+        }
+
+        // Calcul des horaires supplémentaires mensuels
+        function calculateHSup() {
+            let hour = 0;
+            for (let i = 1; i <= 31; i++) {
+                if (i < 10) {
+                    i = '0' + i;
+                }
+
+                if (document.getElementById('total-hour-' + i)){
+                    hour = hour + parseFloat($("#total-hour-" + i).html());
+                 }
+            }
+
+                $("#horaire-sup").text(String(hour).replace(".", "h").replace("h5", "h30"));
+
+        }
+
+    </script>
+{% endblock %}

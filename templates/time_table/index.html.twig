@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TimeTable index{% endblock %}
+
+{% block body %}
+    <h1>TimeTable index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Am_start_at</th>
+                <th>Am_end_at</th>
+                <th>Pm_start_at</th>
+                <th>Pm_end_at</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for time_table in time_tables %}
+            <tr>
+                <td>{{ time_table.id }}</td>
+                <td>{{ time_table.amStartAt ? time_table.amStartAt|date('H:i:s') : '' }}</td>
+                <td>{{ time_table.amEndAt ? time_table.amEndAt|date('H:i:s') : '' }}</td>
+                <td>{{ time_table.pmStartAt ? time_table.pmStartAt|date('H:i:s') : '' }}</td>
+                <td>{{ time_table.pmEndAt ? time_table.pmEndAt|date('H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('time_table_show', {'id': time_table.id}) }}">show</a>
+                    <a href="{{ path('time_table_edit', {'id': time_table.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('time_table_new') }}">Create new</a>
+{% endblock %}

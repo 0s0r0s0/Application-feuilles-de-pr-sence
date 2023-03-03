@@ -1,0 +1,31 @@
+{{ form_start(form) }}
+
+<div class='row mt-4 ml-4 mb-4'>
+    <div class="form-group">{{ form_row(form.firstName)}}</div>
+    <div class="form-group">{{ form_row(form.lastName)}}</div>
+</div>
+
+<div class='row'>
+    <div class="form-group col-3 ml-4 mb-4">{{ form_row(form.status)}}</div>
+    <div class="ml-4 mb-4">Besoin d'un nouveau service ? <button type="button" class="btn ml-4" data-toggle="modal" data-target="#exampleModal">
+            Ajouter
+        </button>
+    </div>
+</div>
+
+<div class='row'>
+    <div class="form-group col-3 ml-4 mb-4">{{ form_row(form.job)}}</div>
+    <div class="ml-4 mb-4">Besoin d'une nouvelle fonction ? <button type="button" class="btn" data-toggle="modal" data-target="#exampleModal2">
+            Ajouter
+        </button>
+    </div>
+</div>
+
+
+<div class="form-group mt-4 mb-4 ml-4">{{ form_row(form.isActive)}}</div>
+<div>
+    <button class="btn ml-4">{{ button_label|default('Enregistrer') }}</button>
+</div>{{ form_end(form)}}
+</div>
+
+{{ form_end(form) }}

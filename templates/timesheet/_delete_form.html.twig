@@ -1,0 +1,5 @@
+<form method="post" action="{{ path('timesheet_delete', {'id': elt.id}) }}" onsubmit="return confirm('Etes-vous sûr(e) de vouloir supprimer cette feuille de présence? Cette action est irréversible!');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ elt.id) }}">
+    <button class="btn ml-3">Supprimer</button>
+</form>

@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails salarié{% endblock %}
+
+{% block body %}
+
+    {% include '_menu.html.twig' %}
+
+    <div class='crud-container'>
+        <h1>Détails du salarié :</h1>
+
+        <table class="table mt-5">
+            <tbody>
+
+            <tr>
+                <th>Prénom</th>
+                <td>{{ employee.firstName }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ employee.lastName }}</td>
+            </tr>
+            <tr>
+                <th>Salarié actif?</th>
+                <td>{{ employee.isActive ? 'Oui' : 'Non' }}</td>
+            </tr>
+            <tr>
+                <th>6 dernières feuilles</th>
+                <td>{% for sheet in sheets %}
+                        <ul>
+                            {% for elt in sheet  %}
+                                {% if elt.employee.id == employee.id %}
+                                    <div class=''>
+                                        <li id='liste-pdf'><a id='lien-pdf' href="{{ path('pdf', {'id': elt.id}) }} ">{{ elt.month.label }} {{ elt.year }} </a>{{ include('timesheet/_delete_form.html.twig') }}</li>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+        <div class='row'>
+            <a href="{{ path('home') }}"><button class="btn ml-4">Retour</button></a>
+
+            <a href="{{ path('employee_edit', {'id': employee.id}) }}"><button class="btn ml-3">Modifier</button></a>
+
+            {{ include('employee/_delete_form.html.twig') }}
+        </div>
+
+    </div>
+{% endblock %}

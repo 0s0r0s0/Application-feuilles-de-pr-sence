@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification salarié{% endblock %}
+
+{% block body %}
+    {% include '_menu.html.twig' %}
+    <div class="ml-5 mb-5 mt-5">
+        <h1>Modifier un salarié</h1>
+    </div>
+
+    <div class='ml-4 mt-3'>
+        {{ include('employee/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        <div class='row ml-4'>
+            <a href="{{ path('home') }}"><button class="btn ml-4 mt-4">Retour</button></a>
+            <div class='mt-4'>{{ include('employee/_delete_form.html.twig') }}</div>
+        </div>
+    </div>
+
+    <!-- Modal Service -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer un nouveau statut</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('employee/newStatus.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                    <!-- fermeture div row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Fonction -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enregistrer une nouvelle fonction</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('employee/newJob.html.twig') }}
+                    <button type="button" class="btn mt-3" data-dismiss="modal">Annuler</button>
+                    <!-- fermeture div row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+{% endblock %}

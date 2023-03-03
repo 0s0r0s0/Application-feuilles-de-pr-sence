@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle absence{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('style.css')}}">
+{% endblock %}
+
+
+
+{% block body %}
+
+
+    {{ form_start(formAbs)}}
+    <div class="form-row ml-2">
+        <div class="form-group">{{ form_row(formAbs.label, {'attr': {'placeholder': 'Congés, école etc...'}})}}</div>
+    </div>
+
+    <div class='row btn-modal'>
+    <button class="btn mt-3">{{ button_label|default('Enregistrer') }}</button>
+    {{ form_end(formAbs) }}
+
+{% endblock %}

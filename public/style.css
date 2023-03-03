@@ -1,0 +1,524 @@
+
+body {
+    font-family: "Roboto","Bellota Text";
+}
+
+/*Container page*/
+
+.box {
+    margin: 0;
+    min-width: 100%;
+}
+
+/* Entête*/
+
+header {
+    background-color:#0D1E2B;
+}
+
+.banniere {
+    padding-bottom: 30px;
+    padding-top: 30px;
+    padding-left: 3%;
+    border: none;
+    box-shadow: 0px 10px 35px -1px rgba(0,0,0,0.7);
+}
+
+.navbar {
+    background-color:#0D1E2B;
+}
+
+.titres {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+
+/* Titre des pages */
+
+h1 {
+    color: #000000;
+    font-family: "MuseoModerno", "Roboto","Bellota Text";
+    font-size: 194%;
+    display: inline;
+}
+
+/*titre de la page d'accueil*/
+#accueil {
+    color: white;
+    margin-left: 30%;
+    padding-left: 14%;
+}
+
+
+h2 {
+    margin-right: 20px;
+}
+
+/* Titres h2 page settings + btn "créer nouveau" */
+.param-title {
+    text-align: center;
+    margin-left: 0;
+    padding-top: 8%;
+    padding-bottom: 12%;
+    padding-left: 18%;
+}
+
+
+/* Pages crud */
+.crud-container {
+    padding-left: 10%;
+    padding-top: 2%;
+}
+
+/* Tableaux */
+
+th {
+    font-family: "MuseoModerno", "Roboto", "Bellota Text";
+    font-family: "Roboto", "Bellota Text";
+    padding-top: 1.75rem !important;
+    padding-bottom: 1.75rem !important;
+}
+
+ul {
+    padding: 0;
+}
+
+#liste-pdf {
+    display: inline-flex;
+    margin-bottom: 3%;
+}
+
+/* Page settings / Parametres */
+
+.edit-param-title {
+    margin-left: 0;
+    padding-bottom: 24px;
+}
+
+/* 3 tableaux page settings */
+
+#job-table {
+    text-align: center;
+}
+
+#service-table {
+    text-align: center;
+}
+
+#absence-table {
+    text-align: center;
+}
+
+
+
+
+/* LIENS */
+
+a {
+    color: black;
+}
+
+a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+
+/* Liens PDF */
+
+.pdf {
+    font-style: italic;
+}
+
+a.pdf:hover {
+    text-decoration: underline;
+}
+
+#lien-pdf {
+    margin-top: 4px;
+    font-style: italic ;
+}
+
+
+
+/* Design des boutons */
+
+.btn {
+    font-family: "roboto", "open sans";
+    color: black;
+    margin-left: 8px;
+    border: none;
+    border-radius: 4px;
+    background-color:  	#F7BC65;
+    font-size: 100%;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
+}
+
+.btn-principal {
+    background-color: #F7BC65;
+    color: black;
+    height: 42px;
+    width: 182px;
+    box-shadow: 15px 10px 5px rgba(0, 0, 0, 0.8);
+    font-size: 110%;
+
+}
+
+#btn-p {
+    margin-left: 4%;
+    margin-right: -2%;
+}
+
+.btn-ok {
+    height: 38px;
+    width: 60px;
+    margin-top: 24px;
+}
+
+.btn:hover {
+    color: black;
+    background-color: #FFCD82;
+    animation: pulse;
+    animation-duration: 1s;
+}
+
+.btn:active {
+    color: black;
+    background-color: #FFCD82;
+    border: none;
+}
+
+.btn:focus {
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* bouton "ajouter" les horaires du salarié */
+
+.btn-ajouter {
+    width: 78.95px;
+    height: 32px;
+
+}
+
+.lien-ajouter {
+    padding-left: 30px;
+}
+
+
+
+/*Pop-up*/
+
+/* Titre h5 du MODAL (crétaion du modèle de feuille de présence) */
+
+h5 {
+    font-family: "MuseoModerno", "Roboto";
+}
+
+/* boutons de la modal */
+
+.block-btn {
+    display: flex;
+}
+
+/*modal avec "OK" à la place de "Enregistrer"*/
+#btn-modal-1 {
+    margin-top: 20px;
+    padding-left: 70%;
+}
+
+/*Toutes les autres*/
+.btn-modal {
+    margin-top: 20px;
+    padding-left: 58%;
+}
+
+
+
+/* Parties grisées quand inactif (page d'accueil) */
+
+.unactivated {
+    color: #AAAAAA;
+}
+.unactivated .btn {
+    background-color: #c7c7c7;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* ICONS */
+
+.icons {
+    height: 26px;
+    width: auto;
+    cursor: pointer;
+    margin-bottom: 8px;
+    padding: 0 !important;
+
+}
+
+.icons-bar {
+    display: inline-flex;
+    padding-top: 10px;
+    padding-left: 0;
+}
+
+/*sur la banniere d'accueil*/
+.icon-home {
+    margin-left: 0;
+}
+
+.icon-calendar {
+    margin-left: 20px;
+}
+
+.icon-settings {
+    margin-left: 20px;
+}
+
+
+
+
+
+
+
+/*Mise en forme de la feuille de présence*/
+
+.jours {
+    font-weight: bold;
+    font-family: "Roboto","Bellota Text";
+}
+
+/*Notes*/
+.note {
+    width: 75px;
+}
+
+#note {
+    height: 20px;
+    width: auto;
+    margin-left: 16px;
+
+}
+
+.btn-note {
+    background-color: white !important;
+}
+
+.day {
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+/*Tout ce qui est en haut de la feuille de présence*/
+.barre-principale  {
+    margin-left: 54px;
+    margin-bottom: 50px;
+    margin-top: 20px;
+}
+
+.titre-hsup {
+    font-family: "Roboto","Bellota Text";
+    padding-left: 10%;
+}
+
+.titre-absence {
+    font-family: "Roboto","Bellota Text";
+    padding-left: 8%;
+}
+
+.titre-total {
+    font-family: "Roboto","Bellota Text";
+    padding-left: 20%;
+}
+
+
+/* tous les boutons sur la page feuille de presence */
+.btn-horaire {
+    margin-top: 40px;
+}
+
+.btn-h {
+    font-size: 80%;
+}
+abs {
+    padding-left: 12px;
+    padding-right: 12px;
+    margin: 0;
+}
+
+/* Feuille de présence : weekend */
+div.day.week-end {
+    background-color: #cecece;
+}
+
+
+/*Total des heures*/
+
+.total-heures {}
+
+#ts-month {
+    font-size: 1.5em;
+}
+
+#ts-year{
+    font-size: 1.5em;
+}
+
+
+/*symboles + et - pour ajouter ou soustraire des heures sup*/
+.add-sub {
+    height: 15px;
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.add-sub:active {
+    height: 14px;
+    width: auto;
+    opacity: 0.7;
+}
+
+#h-sup {
+    margin-left: 20%;
+}
+
+
+/*jours impairs du mois (parties grisées)*/
+.impair {
+    background-color: #f2f2f2;
+}
+
+.date {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+input {
+    border-radius: 4px !important;
+}
+
+
+/* options inputs select*/
+select {
+    font-family: "Roboto", "Bellota Text";
+    border-radius: 6%;
+}
+
+.select-absence {
+    padding-left: 8px;
+    padding-right: 0;
+}
+
+label {
+    padding-right: 1%;
+}
+
+#time_table_employee {
+    margin-top: 2%;
+    margin-bottom: 1%;
+}
+
+/* Pagination */
+
+.pagination {
+    padding-top: 20%;
+}
+
+.page-link {
+    color: grey;
+}
+
+.page-link:hover {
+    background-color: #FFCD82;
+    color: black;
+    border-radius: 8px;
+
+}
+
+.page-link:focus {
+    background-color: white;
+    box-shadow: 0 0 0 .2rem rgba(163, 163, 163, 0.4);
+    border-radius: 8px;
+}
+
+.page-item.active .page-link {
+    color: black;
+    background-color: #AAAAAA;
+    border-radius: 8px;
+    border-color: #AAAAAA;
+    box-shadow: 0 0 0 .2rem rgba(163, 163, 163, 0.4);
+}
+
+
+.link-employee:hover {
+    background-color: #AAAAAA;
+}
+
+.heure-sup {
+    min-width: 100px;
+}
+
+.total-hour {
+    min-width: 30px;
+    display: inline-block;
+    padding-left: 8px;
+    padding-right: 0;
+}
+
+.sheet-print {
+    max-width: 75%;
+}
+
+.filtered {
+    display: none;
+}
+
+<!-- -->
+.error {
+    border: solid 3px #B0413E;
+    color: #B0413E;
+}
+
+.error:focus {
+    border: solid 3px #B0413E;
+    color: #B0413E;
+}
+
+/* calendrier */
+
+.fc-unthemed td.fc-today {
+    border-style: solid;
+    background-color: #FFFADF!important;
+}
+
+.fc-unthemed th.fc-sat {
+    background-color: cornflowerblue !important;
+}
+
+.fc-unthemed td.fc-sat {
+    background-color: cornflowerblue !important;
+}
+
+.fc-unthemed th.fc-sun {
+    background-color: cornflowerblue !important;
+}
+
+.fc-unthemed td.fc-sun {
+    background-color: cornflowerblue !important;
+}
+
+.fc-unthemed a.ferie {
+    border: none !important;
+    background-color: red !important;
+    color: #000;
+}
+
+.fc-time {
+    display: none;
+}
